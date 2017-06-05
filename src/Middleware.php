@@ -59,6 +59,6 @@ final class Middleware implements MiddlewareInterface
      */
     public function priority(): int
     {
-        return Priority::LAST;
+        return Priority::SECOND_LAST;
     }
 }
