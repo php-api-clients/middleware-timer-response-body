@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ApiClients\Tests\Middleware\Timer\ReponseBody;
+namespace ApiClients\Tests\Middleware\Timer\ResponseBody;
 
-use ApiClients\Middleware\Timer\ReponseBody\Middleware;
+use ApiClients\Middleware\Timer\ResponseBody\Middleware;
 use ApiClients\Tools\TestUtilities\TestCase;
 use React\EventLoop\Factory;
 use RingCentral\Psr7\Request;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ApiClients\Middleware\Timer\ReponseBody;
+namespace ApiClients\Middleware\Timer\ResponseBody;
 
 use ApiClients\Foundation\Middleware\ErrorTrait;
 use ApiClients\Foundation\Middleware\MiddlewareInterface;

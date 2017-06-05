@@ -18,12 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ApiClients\\Middleware\\Timer\\ReponseBody\\": "src/"
+            "ApiClients\\Middleware\\Timer\\ResponseBody\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ApiClients\\Tests\\Middleware\\Timer\\ReponseBody\\": "tests/"
+            "ApiClients\\Tests\\Middleware\\Timer\\ResponseBody\\": "tests/"
         }
     },
     "config": {
