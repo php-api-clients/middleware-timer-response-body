@@ -2,24 +2,22 @@
 
 namespace ApiClients\Middleware\Timer\ResponseBody;
 
-use ApiClients\Foundation\Middleware\ErrorTrait;
+use ApiClients\Foundation\Middleware\Annotation\SecondLast;
 use ApiClients\Foundation\Middleware\MiddlewareInterface;
-use ApiClients\Foundation\Middleware\Priority;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use React\Promise\CancellablePromiseInterface;
+use Throwable;
 use function React\Promise\resolve;
 
 final class Middleware implements MiddlewareInterface
 {
-    use ErrorTrait;
-
     const HEADER = 'X-Middleware-Timer-Response-Body';
 
     /**
-     * @var float
+     * @var float[]
      */
-    private $time;
+    private $time = [];
 
     /**
      * Return the processed $request via a fulfilled promise.
@@ -29,10 +27,15 @@ final class Middleware implements MiddlewareInterface
      * @param  RequestInterface            $request
      * @param  array                       $options
      * @return CancellablePromiseInterface
+     *
+     * @SecondLast()
      */
-    public function pre(RequestInterface $request, array $options = []): CancellablePromiseInterface
-    {
-        $this->time = microtime(true);
+    public function pre(
+        RequestInterface $request,
+        string $transactionId,
+        array $options = []
+    ): CancellablePromiseInterface {
+        $this->time[$transactionId] = microtime(true);
 
         return resolve($request);
     }
@@ -43,22 +46,25 @@ final class Middleware implements MiddlewareInterface
      * @param  ResponseInterface           $response
      * @param  array                       $options
      * @return CancellablePromiseInterface
+     *
+     * @SecondLast()
      */
-    public function post(ResponseInterface $response, array $options = []): CancellablePromiseInterface
-    {
-        $time = microtime(true) - $this->time;
+    public function post(
+        ResponseInterface $response,
+        string $transactionId,
+        array $options = []
+    ): CancellablePromiseInterface {
+        $time = microtime(true) - $this->time[$transactionId];
+        unset($this->time[$transactionId]);
 
         return resolve($response->withAddedHeader(self::HEADER, (string)$time));
     }
 
-    /**
-     * Priority ranging from 0 to 1000. Where 1000 will be executed first on `pre` and 0 last on `pre`.
-     * For `post` the order is reversed.
-     *
-     * @return int
-     */
-    public function priority(): int
-    {
-        return Priority::SECOND_LAST;
+    public function error(
+        Throwable $throwable,
+        string $transactionId,
+        array $options = []
+    ): CancellablePromiseInterface {
+        unset($this->time[$transactionId]);
     }
 }
